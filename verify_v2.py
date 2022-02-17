@@ -85,8 +85,9 @@ def show_result_pyplot2(model,
         wait_time=wait_time,
         win_name=title,
         out_file=f_name,
-        bbox_color=(72, 101, 241),
-        text_color=(72, 101, 241))
+        font_size='9',
+        bbox_color=(2, 10, 241),
+        text_color=(241, 10, 2))
 
 if __name__ == '__main__':
     args=parse_args()
