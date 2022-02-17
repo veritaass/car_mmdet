@@ -1,0 +1,69 @@
+import imp
+from pkg_resources import fixup_namespace_packages
+from mmdet.apis import init_detector, inference_detector, show_result_pyplot
+import numpy as np
+import pathlib
+from datetime import datetime
+
+def main(args):
+    #config_file = 'configs/faster_rcnn/faster_rcnn_r50_fpn_1x_coco.py'
+    config_file = 'configs/htkim_car/htkim_yolox_s_8x8_300e_coco_2nd.py'
+    # download the checkpoint from model zoo and put it in `checkpoints/`
+    # url: https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_1x_coco/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth
+    #checkpoint_file = 'checkpoints/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth'
+    #checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/best_bbox_mAP_epoch_780.pth'
+    checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/epoch_1500.pth'
+    score_thr=0.3
+    
+    device = 'cuda:0'
+    # init a detector
+    model = init_detector(config_file, checkpoint_file, device=device)
+    # inference the demo image
+    img = '/raid/templates/farm-data/car/actual_testdata/car_test1.jpg'
+    rst_inf = inference_detector(model, img)  # 'demo/demo.jpg')
+    print(rst_inf)
+
+    show_result_pyplot2(model, img, rst_inf, score_thr)
+
+def show_result_pyplot2(model,
+                       img,
+                       result,
+                       score_thr=0.3,
+                       title='result',
+                       wait_time=0):
+    """Visualize the detection results on the image.
+
+    Args:
+        model (nn.Module): The loaded detector.
+        img (str or np.ndarray): Image filename or loaded image.
+        result (tuple[list] or list): The detection result, can be either
+            (bbox, segm) or just bbox.
+        score_thr (float): The threshold to visualize the bboxes and masks.
+        title (str): Title of the pyplot figure.
+        wait_time (float): Value of waitKey param.
+                Default: 0.
+    """
+    # export result  to file
+    f_name = "res_" + str(model.CLASSES) + "_" + pathlib.Path(img).name + "_score" + score_thr + "_" + datetime.now().strftime("%Y%m%d_%H%M%S")
+    f_content = str(result)
+    o_file = open(f_name, "w")
+    o_file.write(f_content)
+    o_file.close()
+
+    # export result to image
+    if hasattr(model, 'module'):
+        model = model.module
+    model.show_result(
+        img,
+        result,
+        score_thr=score_thr,
+        show=False,
+        wait_time=wait_time,
+        win_name=title,
+        out_file=f_name,
+        bbox_color=(72, 101, 241),
+        text_color=(72, 101, 241))
+
+if __name__ == '__main__':
+    args=""
+    main(args)
