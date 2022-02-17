@@ -8,7 +8,8 @@ def main(args):
     # download the checkpoint from model zoo and put it in `checkpoints/`
     # url: https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_1x_coco/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth
     #checkpoint_file = 'checkpoints/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth'
-    checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco/best_bbox_mAP_epoch_297.pth'
+    #checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/best_bbox_mAP_epoch_780.pth'
+    checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/epoch_1500.pth'
     device = 'cuda:0'
     # init a detector
     model = init_detector(config_file, checkpoint_file, device=device)
