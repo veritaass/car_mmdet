@@ -5,25 +5,43 @@ import numpy as np
 import pathlib
 from datetime import datetime
 
+from argparse import ArgumentParser
+
+def parse_args():
+    parser = ArgumentParser()
+    parser.add_argument('--img', help='Image file'
+        , default='tools/car_test1.jpg')
+    parser.add_argument('--config', help='Config file'
+        , default='configs/htkim_car/htkim_yolox_s_8x8_300e_coco_2nd.py')
+    parser.add_argument('--checkpoint', help='Checkpoint file'
+        , default='work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/epoch_1700.pth')
+    parser.add_argument('--score-thr', type=float
+        , default=0.2, help='bbox score threshold')
+    args = parser.parse_args()
+    return args
+
 def main(args):
     #config_file = 'configs/faster_rcnn/faster_rcnn_r50_fpn_1x_coco.py'
-    config_file = 'configs/htkim_car/htkim_yolox_s_8x8_300e_coco_2nd.py'
+    # config_file = 'configs/htkim_car/htkim_yolox_s_8x8_300e_coco_2nd.py'
+    config_file = args.config
     # download the checkpoint from model zoo and put it in `checkpoints/`
     # url: https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_1x_coco/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth
     #checkpoint_file = 'checkpoints/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth'
     #checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/best_bbox_mAP_epoch_780.pth'
-    checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/epoch_1500.pth'
+    # checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/epoch_1500.pth'
+    checkpoint_file = args.checkpoint
     #score_thr=0.3
     
     device = 'cuda:0'
     # init a detector
     model = init_detector(config_file, checkpoint_file, device=device)
     # inference the demo image
-    img = '/raid/templates/farm-data/car/actual_testdata/car_test1.jpg'
+    img = args.img
+    # img = '/raid/templates/farm-data/car/actual_testdata/car_test1.jpg'
     rst_inf = inference_detector(model, img)  # 'demo/demo.jpg')
     #print(rst_inf)
 
-    show_result_pyplot2(model, img, rst_inf, score_thr=0.3)
+    show_result_pyplot2(model, img, rst_inf, score_thr=args.score_thr)
 
 def show_result_pyplot2(model,
                        img,
