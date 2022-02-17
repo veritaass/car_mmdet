@@ -40,15 +40,18 @@ def main(args):
     # img = '/raid/templates/farm-data/car/actual_testdata/car_test1.jpg'
     rst_inf = inference_detector(model, img)  # 'demo/demo.jpg')
     #print(rst_inf)
-
-    show_result_pyplot2(model, img, rst_inf, score_thr=args.score_thr)
+    # f_name = "res_" + "-".join(model.CLASSES) + "_score" + str(args.score_thr) + "_" + pathlib.Path(img).name
+    f_name = "res_" + pathlib.Path(img).name.split(".")[0] + "_score" + str(args.score_thr) + "_" + pathlib.Path(img).name
+    show_result_pyplot2(model, img, rst_inf, score_thr=args.score_thr, f_name)
 
 def show_result_pyplot2(model,
                        img,
                        result,
                        score_thr=0.3,
                        title='result',
-                       wait_time=0):
+                       wait_time=0,
+                       f_name="resultfile"
+                       ):
     """Visualize the detection results on the image.
 
     Args:
@@ -64,7 +67,8 @@ def show_result_pyplot2(model,
     # export result  to file
     # print(model.CLASSES) --->> ('license_plate',)
     #f_name = "res_" + "-".join(model.CLASSES) + "_" + pathlib.Path(img).name + "_score" + str(score_thr) + "_" + datetime.now().strftime("%Y%m%d_%H%M%S")
-    f_name = "res_" + "-".join(model.CLASSES) + "_score" + str(score_thr) + "_" + pathlib.Path(img).name
+    # f_name = "res_" + "-".join(model.CLASSES) + "_score" + str(score_thr) + "_" + pathlib.Path(img).name
+    
     f_content = str(result)
     o_file = open(f_name+".txt", "w")
     o_file.write(f_content)
