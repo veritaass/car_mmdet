@@ -13,7 +13,7 @@ def main(args):
     #checkpoint_file = 'checkpoints/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth'
     #checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/best_bbox_mAP_epoch_780.pth'
     checkpoint_file = 'work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/epoch_1500.pth'
-    score_thr=0.3
+    #score_thr=0.3
     
     device = 'cuda:0'
     # init a detector
@@ -21,9 +21,9 @@ def main(args):
     # inference the demo image
     img = '/raid/templates/farm-data/car/actual_testdata/car_test1.jpg'
     rst_inf = inference_detector(model, img)  # 'demo/demo.jpg')
-    print(rst_inf)
+    #print(rst_inf)
 
-    show_result_pyplot2(model, img, rst_inf, score_thr)
+    show_result_pyplot2(model, img, rst_inf, score_thr=0.3)
 
 def show_result_pyplot2(model,
                        img,
@@ -44,9 +44,11 @@ def show_result_pyplot2(model,
                 Default: 0.
     """
     # export result  to file
-    f_name = "res_" + str(model.CLASSES) + "_" + pathlib.Path(img).name + "_score" + score_thr + "_" + datetime.now().strftime("%Y%m%d_%H%M%S")
+    # print(model.CLASSES) --->> ('license_plate',)
+    #f_name = "res_" + "-".join(model.CLASSES) + "_" + pathlib.Path(img).name + "_score" + str(score_thr) + "_" + datetime.now().strftime("%Y%m%d_%H%M%S")
+    f_name = "res_" + "-".join(model.CLASSES) + "_score" + str(score_thr) + "_" + pathlib.Path(img).name
     f_content = str(result)
-    o_file = open(f_name, "w")
+    o_file = open(f_name+".txt", "w")
     o_file.write(f_content)
     o_file.close()
 
