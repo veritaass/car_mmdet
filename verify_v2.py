@@ -85,5 +85,5 @@ def show_result_pyplot2(model,
         text_color=(72, 101, 241))
 
 if __name__ == '__main__':
-    args=""
+    args=parse_args()
     main(args)
