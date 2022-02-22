@@ -12,11 +12,11 @@ def parse_args():
     parser.add_argument('--img', help='Image file'
         , default='tools/car_test1.jpg')
     parser.add_argument('--config', help='Config file'
-        , default='configs/htkim_car/htkim_yolox_s_8x8_300e_coco_2nd.py')
+        , default='configs/htkim_car/htkim_yolox_s_8x8_300e_coco_3rd.py')
     parser.add_argument('--checkpoint', help='Checkpoint file'
-        , default='work_dirs/htkim_yolox_s_8x8_300e_coco_2nd/epoch_3000.pth')
+        , default='work_dirs/htkim_yolox_s_8x8_300e_coco_3rd/epoch_2000.pth')
     parser.add_argument('--score-thr', type=float
-        , default=0.2, help='bbox score threshold')
+        , default=0.5, help='bbox score threshold')
     args = parser.parse_args()
     return args
 
@@ -41,7 +41,8 @@ def main(args):
     rst_inf = inference_detector(model, img)  # 'demo/demo.jpg')
     #print(rst_inf)
     # f_name = "res_" + "-".join(model.CLASSES) + "_score" + str(args.score_thr) + "_" + pathlib.Path(img).name
-    f_name = "res_" + pathlib.Path(checkpoint_file).name.split(".")[0] + "_score" + str(args.score_thr) + "_" + pathlib.Path(img).name
+    out_path =  'htkim_result/' + pathlib.Path(config_file).name.split(".")[0] + '/' + pathlib.Path(checkpoint_file).name.split(".")[0] + '/'
+    f_name = out_path + "res_" + pathlib.Path(checkpoint_file).name.split(".")[0] + "_score" + str(args.score_thr) + "_" + pathlib.Path(img).name
     show_result_pyplot2(model, img, rst_inf, score_thr=args.score_thr, f_name=f_name)
 
 def show_result_pyplot2(model,
@@ -68,11 +69,6 @@ def show_result_pyplot2(model,
     # print(model.CLASSES) --->> ('license_plate',)
     #f_name = "res_" + "-".join(model.CLASSES) + "_" + pathlib.Path(img).name + "_score" + str(score_thr) + "_" + datetime.now().strftime("%Y%m%d_%H%M%S")
     # f_name = "res_" + "-".join(model.CLASSES) + "_score" + str(score_thr) + "_" + pathlib.Path(img).name
-    
-    f_content = str(result)
-    o_file = open(f_name+".txt", "w")
-    o_file.write(f_content)
-    o_file.close()
 
     # export result to image
     if hasattr(model, 'module'):
@@ -88,6 +84,12 @@ def show_result_pyplot2(model,
         font_size='9',
         bbox_color=(2, 10, 241),
         text_color=(241, 10, 2))
+
+    f_content = str(result)
+    o_file = open(f_name+".txt", "w")
+    o_file.write(f_content)
+    o_file.close()
+
 
 if __name__ == '__main__':
     args=parse_args()
